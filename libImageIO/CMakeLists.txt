@@ -57,13 +57,15 @@ set(HEADERS
 	include/imageio/NamedLandmarkSource.hpp
 	include/imageio/OrderedLabeledImageSource.hpp
 	include/imageio/OrderedLandmarkSink.hpp
+	include/imageio/PascStillEyesLandmarkFormatParser.hpp
 	include/imageio/RectLandmark.hpp
 	include/imageio/RectLandmarkSink.hpp
 	include/imageio/RepeatingFileImageSource.hpp
-	include/imageio/SimpleModelLandmarkFormatParser.hpp
-	include/imageio/SimpleModelLandmarkSink.hpp
 	include/imageio/SingleLandmarkSink.hpp
 	include/imageio/SingleLandmarkSource.hpp
+	include/imageio/SimpleModelLandmarkFormatParser.hpp
+	include/imageio/SimpleModelLandmarkSink.hpp
+	include/imageio/SimpleRectLandmarkFormatParser.hpp
 	include/imageio/TlmsLandmarkFormatParser.hpp
 	include/imageio/VideoImageSink.hpp
 	include/imageio/VideoImageSource.hpp
@@ -91,13 +93,15 @@ set(SOURCE
 	src/imageio/MuctLandmarkFormatParser.cpp
 	src/imageio/NamedLabeledImageSource.cpp
 	src/imageio/OrderedLabeledImageSource.cpp
+	src/imageio/PascStillEyesLandmarkFormatParser.cpp
 	src/imageio/RectLandmark.cpp
 	src/imageio/RectLandmarkSink.cpp
 	src/imageio/RepeatingFileImageSource.cpp
-	src/imageio/SimpleModelLandmarkFormatParser.cpp
-	src/imageio/SimpleModelLandmarkSink.cpp
 	src/imageio/SingleLandmarkSink.cpp
 	src/imageio/SingleLandmarkSource.cpp
+	src/imageio/SimpleModelLandmarkFormatParser.cpp
+	src/imageio/SimpleModelLandmarkSink.cpp
+	src/imageio/SimpleRectLandmarkFormatParser.cpp
 	src/imageio/TlmsLandmarkFormatParser.cpp
 	src/imageio/VideoImageSink.cpp
 	src/imageio/VideoImageSource.cpp

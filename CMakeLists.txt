@@ -46,7 +46,7 @@ add_subdirectory(libCondensation)		# Condensation tracking (particle filter)
 add_subdirectory(libRender)				# Mesh and Vertex classes. (And, currently not working so great: A software renderer to render vertices and 3D-meshes)
 add_subdirectory(libMorphableModel)		# PCA- and 3D Morphable Face Model classes
 add_subdirectory(libFitting)			# Camera (Pose) estimation and shape-fitting
-add_subdirectory(libSupervisedDescentModel) # A non-parametric model for landmark detection. Uses the supervised descent method.
+add_subdirectory(libSupervisedDescent)	# A non-parametric model for landmark detection. Uses the supervised descent method.
 add_subdirectory(libFaceRecognition)	# Utility library for face recognition experiments, to work with databases, face-record, etc.
 
 # Tracking apps:
@@ -61,11 +61,11 @@ add_subdirectory(VideoPlayerApp)		# App for playing videos, showing landmarks an
 # Face-detection apps:
 #add_subdirectory(ffpDetectApp)			# The classic MR-style face-detect app (4 stages, SvmOeWvmOe). (Note: Check if it still works)
 
-# SDM landmark detection apps:
-add_subdirectory(sdmTraining)			# Training of Supervised Descent Method landmark detection models
-add_subdirectory(sdmLandmarkDetection)	# Run the SDM landmark detection on one or several images.
+# Face- and landmark detection apps:
+add_subdirectory(detect-and-correct-faces) # Detect faces and validate them using given ground-truth.
+add_subdirectory(detect-landmarks)		# Run the SDM landmark detection on one or several images, the input is either images (V&J will be run) or images & faceboxes.
 add_subdirectory(sdmSimpleLandmarkDetection)	# Run the SDM landmark detection on just one image. Version without libImageIO. (well, libSupervisedDescentModel has a dependency on libImageIO now, but we could easily get rid of that with a CMake option)
-add_subdirectory(sdm-tools)				# Various tool apps for training and running the SDM landmark detection
+add_subdirectory(sdmTraining)			# Training of Supervised Descent Method landmark detection models
 
 # 3DMM fitting:
 add_subdirectory(fitter)			# Experimental command-line fitting app using the software renderer.
@@ -76,7 +76,7 @@ add_subdirectory(fittingTools) # Tools for fitting and model-rendering (e.g. com
 # Tools:
 add_subdirectory(landmarkVisualiser)	# Simple app to read landmarks and images and display them
 add_subdirectory(landmarkConverter)		# Simple app to convert landmarks from one format into another
-add_subdirectory(landmarkEvaluation)	# Read detected and ground-truth landmarks and perform an evaluation.
+add_subdirectory(evaluate-landmarks)	# Read detected and ground-truth landmarks and perform an evaluation.
 
 # Face-recognition:
 add_subdirectory(facerecognitionTools) # Tools (e.g. create probe/gallery image-lists)
