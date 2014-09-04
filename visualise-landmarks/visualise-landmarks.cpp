@@ -1,5 +1,5 @@
 /*
- * landmarkVisualiser.cpp
+ * visualise-landmarks.cpp
  *
  *  Created on: 24.01.2014
  *      Author: Patrik Huber
@@ -35,7 +35,6 @@
 #include "opencv2/core/core.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
 #include "opencv2/highgui/highgui.hpp"
-#include "opencv2/calib3d/calib3d.hpp"
 
 #ifdef WIN32
 	#define BOOST_ALL_DYN_LINK	// Link against the dynamic boost lib. Seems to be necessary because we use /MD, i.e. link to the dynamic CRT.
@@ -59,6 +58,7 @@
 #include "imageio/IbugLandmarkFormatParser.hpp"
 #include "imageio/MuctLandmarkFormatParser.hpp"
 #include "imageio/DidLandmarkFormatParser.hpp"
+#include "imageio/SdxLandmarkFormatParser.hpp"
 #include "imageio/SimpleRectLandmarkFormatParser.hpp"
 
 #include "logging/LoggerFactory.hpp"
@@ -103,6 +103,8 @@ int main(int argc, char *argv[])
 	vector<path> inputFilenames;
 	shared_ptr<ImageSource> imageSource;
 	path landmarksDir; // TODO: Make more dynamic wrt landmark format. a) What about the loading-flags (1_Per_Folder etc) we have? b) Expose those flags to cmdline? c) Make a LmSourceLoader and he knows about a LM_TYPE (each corresponds to a Parser/Loader class?)
+	bool saveImages = false;
+	path outputDirectory;
 	string landmarkType;
 	int forwardDelay;
 
@@ -118,9 +120,11 @@ int main(int argc, char *argv[])
 			("landmarks,l", po::value<path>(&landmarksDir), 
 				"load landmark files from the given folder")
 			("landmark-type,t", po::value<string>(&landmarkType), 
-				"specify the type of landmarks to load: ibug, did, muct76-opencv, rect")
+				"specify the type of landmarks to load: ibug, did, muct76-opencv, sdx, rect")
 			("forward-delay,d", po::value<int>(&forwardDelay)->default_value(0)->implicit_value(1000),
 				"Automatically show the next image after the given time in ms. If the option is omitted or zero, the application will wait for a keypress before showing the next image.")
+			("output,o", po::value<path>(&outputDirectory),
+				"an optional output directory. If given, the images will be written to that directory.")
 		;
 
 		po::positional_options_description p;
@@ -129,7 +133,7 @@ int main(int argc, char *argv[])
 		po::variables_map vm;
 		po::store(po::command_line_parser(argc, argv).options(desc).positional(p).run(), vm);
 		if (vm.count("help")) {
-			cout << "Usage: landmarkVisualiser [options]\n";
+			cout << "Usage: visualise-landmarks [options]" << endl;
 			cout << desc;
 			return EXIT_SUCCESS;
 		}
@@ -141,6 +145,9 @@ int main(int argc, char *argv[])
 				cout << "You have specified to use landmark files. Please also specify the type of the landmarks to load via --landmark-type or -t." << endl;
 				return EXIT_SUCCESS;
 			}
+		}
+		if (vm.count("output")) {
+			saveImages = true;
 		}
 
 	}
@@ -163,8 +170,8 @@ int main(int argc, char *argv[])
 	}
 	
 	Loggers->getLogger("imageio").addAppender(make_shared<logging::ConsoleAppender>(logLevel));
-	Loggers->getLogger("landmarkVisualiser").addAppender(make_shared<logging::ConsoleAppender>(logLevel));
-	Logger appLogger = Loggers->getLogger("landmarkVisualiser");
+	Loggers->getLogger("visualise-landmarks").addAppender(make_shared<logging::ConsoleAppender>(logLevel));
+	Logger appLogger = Loggers->getLogger("visualise-landmarks");
 
 	appLogger.debug("Verbose level for console output: " + logging::logLevelToString(logLevel));
 
@@ -242,11 +249,15 @@ int main(int argc, char *argv[])
 			landmarkSource = make_shared<DefaultNamedLandmarkSource>(LandmarkFileGatherer::gather(imageSource, ".pts", GatherMethod::ONE_FILE_PER_IMAGE_SAME_DIR, groundtruthDirs), landmarkFormatParser);
         } else if (boost::iequals(landmarkType, "muct76-opencv")) {
             landmarkFormatParser = make_shared<MuctLandmarkFormatParser>();
-            landmarkSource = make_shared<DefaultNamedLandmarkSource>(LandmarkFileGatherer::gather(shared_ptr<ImageSource>(), string(), GatherMethod::SEPARATE_FILES, groundtruthDirs), landmarkFormatParser);
+            landmarkSource = make_shared<DefaultNamedLandmarkSource>(LandmarkFileGatherer::gather(nullptr, string(), GatherMethod::SEPARATE_FILES, groundtruthDirs), landmarkFormatParser);
 		}
 		else if (boost::iequals(landmarkType, "did")) {
 			landmarkFormatParser = make_shared<DidLandmarkFormatParser>();
 			landmarkSource = make_shared<DefaultNamedLandmarkSource>(LandmarkFileGatherer::gather(imageSource, ".did", GatherMethod::ONE_FILE_PER_IMAGE_DIFFERENT_DIRS, groundtruthDirs), landmarkFormatParser);
+		}
+		else if (boost::iequals(landmarkType, "sdx")) {
+			landmarkFormatParser = make_shared<SdxLandmarkFormatParser>();
+			landmarkSource = make_shared<DefaultNamedLandmarkSource>(LandmarkFileGatherer::gather(nullptr, ".sdx", GatherMethod::SEPARATE_FILES, groundtruthDirs), landmarkFormatParser);
 		}
 		else if (boost::iequals(landmarkType, "rect")) {
 			landmarkFormatParser = make_shared<SimpleRectLandmarkFormatParser>();
@@ -281,6 +292,11 @@ int main(int argc, char *argv[])
 			lm->draw(img);
 			//cv::circle(img, cv::Point(cvRound(lm->getX()), cvRound(lm->getY())), 3, cv::Scalar(0, 0, 255), 2);
 			//cv::rectangle(landmarksImage, cv::Point(cvRound(lm->getX() - 2.0f), cvRound(lm->getY() - 2.0f)), cv::Point(cvRound(lm->getX() + 2.0f), cvRound(lm->getY() + 2.0f)), cv::Scalar(255, 0, 0));
+		}
+
+		if (saveImages) {
+			path outputFilename = outputDirectory / imageSource->getName().filename();
+			cv::imwrite(outputFilename.string(), img);
 		}
 
 		cv::imshow(windowName, img);
