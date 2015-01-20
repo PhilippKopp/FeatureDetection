@@ -72,6 +72,7 @@ add_subdirectory(fitter)			# Experimental command-line fitting app using the sof
 add_subdirectory(fittingRenderer)	# App to render fitting results
 add_subdirectory(fitterGUI)			# Experimental Fitting-app using the Software Renderer (for one image)
 add_subdirectory(fittingTools) # Tools for fitting and model-rendering (e.g. compare isomaps)
+add_subdirectory(poseNormApp) #App from Philipp to detect face and landmarks and fit in one step
 
 # Tools:
 add_subdirectory(visualise-landmarks)	# Simple app to read landmarks and images and display them
@@ -80,11 +81,11 @@ add_subdirectory(evaluate-landmarks)	# Read detected and ground-truth landmarks 
 add_subdirectory(extract-frames)		# Extracts frames from a video, given a specific criteria (e.g. random or IED)
 
 # Face-recognition:
-add_subdirectory(pasc-video-matching)	# Runs the whole pipeline on the PaSC video-video experiment
-add_subdirectory(facerecognitionTools) # Tools (e.g. create probe/gallery image-lists)
-add_subdirectory(frRunCogExp)		# App for doing face recognition tests with a gallery and probe images
-add_subdirectory(frDbTool)		# App for managing (creating and populating) the sqlite-database used for face-recognition experiments
-add_subdirectory(frDbExp)		# App for doing experiments with the face recognition scores in the database
+#add_subdirectory(pasc-video-matching)	# Runs the whole pipeline on the PaSC video-video experiment
+#add_subdirectory(facerecognitionTools) # Tools (e.g. create probe/gallery image-lists)
+#add_subdirectory(frRunCogExp)		# App for doing face recognition tests with a gallery and probe images
+#add_subdirectory(frDbTool)		# App for managing (creating and populating) the sqlite-database used for face-recognition experiments
+#add_subdirectory(frDbExp)		# App for doing experiments with the face recognition scores in the database
 
 # ============================================================================
 # Experimental, non-working or deprecated:
